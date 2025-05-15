@@ -9,14 +9,40 @@
     <script src="https://js.stripe.com/v3/"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <style>
+        button {
+            border: 1px solid #BE965A !important;
+            background-color: white !important;
+            color: #BE965A !important;
+        }
+
+        button.active {
+            background-color: #BE965A !important;
+            color: white !important;
+        }
+
+        input {
+            border: 1px solid #BE965A !important;
+        }
+
+        select {
+            border: 1px solid #BE965A !important;
+        }
+
+        input[type="checkbox"] {
+            border: 1px solid #BE965A !important;
+            scale: 1.2;
+        }
+    </style>
 </head>
+
 
 <body class="bg-white text-gray-800">
 
     <div x-data="donationApp()" class="relative min-h-screen flex items-center justify-center">
 
         <button @click="open = true"
-            class="bg-yellow-700 text-white font-semibold py-2 px-6 rounded-full flex items-center justify-between hover:bg-yellow-800 transition space-x-4">
+            class="active text-white font-semibold py-2 px-6 rounded-full flex items-center justify-between hover:bg-yellow-800 transition space-x-4">
             <span>Donate</span>
             <span class="border border-white rounded-full p-1">
                 <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -24,22 +50,68 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7">
                     </path>
                 </svg>
+
             </span>
         </button>
 
 
-        <!-- Modal -->
-        <div x-show="open" x-transition @click.self="open = false"
-            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40" x-cloak>
-            <div class="bg-white w-full max-w-2xl p-6 rounded-lg shadow-lg relative">
+        <!-- Modal - Modified to slide in from left -->
+        <div x-show="open"
+        x-transition:enter="transition ease-out duration-700"
+        x-transition:enter-start="opacity-0 transform -translate-x-full"
+        x-transition:enter-end="opacity-100 transform translate-x-0"
+        x-transition:leave="transition ease-in duration-500"
+        x-transition:leave-start="opacity-100 transform translate-x-0"
+        x-transition:leave-end="opacity-0 transform -translate-x-full"
+        @click.self="open = false"
+        class="fixed inset-0  bg-opacity-50 z-40 flex justify-start"
+        x-cloak>
+
+
+
+
+            <div class="bg-white w-full max-w-2xl p-6 shadow-lg  relative h-full md:h-auto  md:overflow-y-auto"
+                style="height: 100vh;
+    display: flex;
+    justify-content: center;
+    flex-direction:column;
+    align-items: center;
+    background: rgb(245, 245, 245);
+    max-width: 600px;">
+             <div class="w-[calc(100%-3rem)] max-w-2xl px-4 mb-3 flex items-center justify-between">
+                <h1 class="text-1xl font-bold" style="color: #BE965A;">DONATE</h1>
+                <button
+                    @click="open = false"
+                    class="p-1 bg-transparent border-none outline-none focus:outline-none hover:opacity-80 transition-opacity duration-200"
+                    style="
+    background: transparent !important;
+    border: none !important;
+">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="82.189 55.096 481.811 481.808"
+                        role="presentation"
+                        aria-hidden="true"
+                        class="w-5 h-5  hover:fill-yellow-400 transition-colors duration-200" style="fill: #BE965A;">
+                        <g>
+                            <path d="M531.936 536.904L323.094 328.063 114.253 536.904l-32.064-32.062L291.032 296 82.189 87.157l32.064-32.061 208.842 208.842L531.936 55.096 564 87.157 355.155 296 564 504.842l-32.064 32.062z"/>
+                        </g>
+                    </svg>
+                </button>
+            </div>
+
+
 
                 <!-- Step 1: Donation Details -->
-                <div x-show="step === 1">
+                <div x-show="step === 1" class="rounded-xl"
+                    style="    background: white;
+    padding: 20px;
+    box-shadow: rgba(0, 0, 0, 0.6) 0px 1px 4px 0px;
+    max-width: 483px;">
                     <!-- Header: Title Left + Close Icon Right -->
                     <div class="flex justify-between items-center mb-2">
-                        <h2 class="text-xl font-semibold text-gray-900">Missionary Donation</h2>
-                        <button @click="open = false"
-                            class="text-yellow-700 text-2xl hover:text-yellow-900">&times;</button>
+                        <h2 class="text-md font-semibold text-gray-900">Missionary Donation</h2>
+
                     </div>
 
                     <hr class="border-t border-gray-200 mb-4">
@@ -66,7 +138,8 @@
 
                     <!-- Dropdown -->
                     <div class="mb-4">
-                        <select x-model="selectedProject" class="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:border-yellow-700">
+                        <select x-model="selectedProject"
+                            class="w-full border border-gray-300 rounded px-3 py-3 outline-none bg-white focus:border-yellow-700">
                             <option>Night Bright</option>
                             <option>Other Options</option>
                         </select>
@@ -82,39 +155,48 @@
                     </div>
 
                     <div class="mb-4">
-                        <a href="#" @click.prevent="showMessage = !showMessage" class="text-sm text-yellow-700 hover:underline">+ Add a message</a>
-                        <textarea x-show="showMessage" x-model="message" class="w-full mt-2 border border-gray-300 rounded px-3 py-2 outline-none focus:border-yellow-700" rows="3" placeholder="Your message..."></textarea>
+                        <a href="#" @click.prevent="showMessage = !showMessage"
+                            class="text-sm text-yellow-700 hover:underline">+ Add a message</a>
+                        <textarea x-show="showMessage" x-model="message"
+                            class="w-full mt-2 border border-gray-300 rounded px-3 py-2 outline-none focus:border-yellow-700" rows="3"
+                            placeholder="Your message..."></textarea>
                     </div>
 
                     <!-- Stay Anonymous + Continue -->
                     <div class="flex items-center justify-between">
                         <label class="inline-flex items-center">
-                            <input type="checkbox" x-model="stayAnonymous" class="form-checkbox text-yellow-700 rounded border-gray-300">
+                            <input type="checkbox" x-model="stayAnonymous"
+                                class="form-checkbox text-yellow-700 rounded border-gray-300">
                             <span class="ml-2 text-sm text-gray-700">Stay Anonymous</span>
                         </label>
 
                         <button @click="goToStep(2)"
-                            class="bg-yellow-700 text-white px-6 py-2 rounded hover:bg-yellow-800 transition font-semibold">
+                            class="active text-white px-6 py-2 rounded hover:bg-yellow-800 transition font-semibold">
                             Continue
                         </button>
                     </div>
                 </div>
 
                 <!-- Step 2: Final Details -->
-                <div x-show="step === 2">
+                <div x-show="step === 2"
+                    style="    background: white;
+    padding: 20px;
+    box-shadow: rgba(0, 0, 0, 0.6) 0px 1px 4px 0px;
+    border-radius: 16px;
+    max-width: 483px;">
                     <!-- Header with Back Button + Title Left + Close Icon Right -->
                     <div class="flex justify-between items-center mb-2">
                         <div class="flex items-center">
                             <button @click="goToStep(1)" class="mr-3 text-gray-600 hover:text-gray-800">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                     xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 19l-7-7 7-7"></path>
                                 </svg>
                             </button>
-                            <h2 class="text-xl font-semibold text-gray-900">Final Details</h2>
+                            <h2 class="text-md font-semibold text-gray-900">Final Details</h2>
                         </div>
-                        <button @click="open = false"
-                            class="text-yellow-700 text-2xl hover:text-yellow-900">&times;</button>
+
                     </div>
 
                     <hr class="border-t border-gray-200 mb-4">
@@ -141,9 +223,10 @@
                                 <button @click="open = !open" type="button"
                                     class="flex justify-between items-center w-full bg-yellow-700 text-white rounded py-2 px-3">
                                     <span x-text="formatPaymentMethod()"></span>
-                                    <svg class="w-5 h-5" :class="{'transform rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    <svg class="w-5 h-5" :class="{ 'transform rotate-180': open }" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7"></path>
                                     </svg>
                                 </button>
                                 <div x-show="open" @click.away="open = false"
@@ -155,15 +238,18 @@
                                         </li>
                                         <li>
                                             <a @click="paymentMethod = 'card-visa'; updateProcessingFee(); open = false"
-                                                class="block px-4 py-2 hover:bg-gray-100 cursor-pointer">Visa & Others</a>
+                                                class="block px-4 py-2 hover:bg-gray-100 cursor-pointer">Visa &
+                                                Others</a>
                                         </li>
                                         <li>
                                             <a @click="paymentMethod = 'bank'; updateProcessingFee(); open = false"
-                                                class="block px-4 py-2 hover:bg-gray-100 cursor-pointer">US Bank Account</a>
+                                                class="block px-4 py-2 hover:bg-gray-100 cursor-pointer">US Bank
+                                                Account</a>
                                         </li>
                                         <li>
                                             <a @click="paymentMethod = 'cash-app'; updateProcessingFee(); open = false"
-                                                class="block px-4 py-2 hover:bg-gray-100 cursor-pointer">Cash App Pay</a>
+                                                class="block px-4 py-2 hover:bg-gray-100 cursor-pointer">Cash App
+                                                Pay</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -182,9 +268,11 @@
                                     <button @click="openTip = !openTip" type="button"
                                         class="flex justify-between items-center w-full bg-white border border-gray-300 rounded py-2 px-3">
                                         <span x-text="`${tipPercent}%`"></span>
-                                        <svg class="w-5 h-5" :class="{'transform rotate-180': openTip}" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                        <svg class="w-5 h-5" :class="{ 'transform rotate-180': openTip }"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                             xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7"></path>
                                         </svg>
                                     </button>
                                     <div x-show="openTip" @click.away="openTip = false"
@@ -228,7 +316,8 @@
                     <!-- Contact Permission -->
                     <div class="mb-6">
                         <label class="flex items-center">
-                            <input type="checkbox" x-model="allowContact" class="form-checkbox h-5 w-5 text-yellow-700 rounded border-gray-300">
+                            <input type="checkbox" x-model="allowContact"
+                                class="form-checkbox h-5 w-5 text-yellow-700 rounded border-gray-300">
                             <span class="ml-2 text-gray-700">Allow Night Bright Inc to contact me</span>
                         </label>
                     </div>
@@ -236,18 +325,23 @@
                     <!-- Payment Button -->
                     <div class="flex justify-end">
                         <button @click="redirectToStripe()"
-                            class="bg-yellow-700 text-white px-6 py-2 rounded hover:bg-yellow-800 transition font-semibold">
+                            class="active text-white px-6 py-2 rounded hover:bg-yellow-800 transition font-semibold">
                             <span x-text="`Pay Now (${formatCurrency(totalAmount + tipAmount)})`"></span>
                         </button>
                     </div>
                 </div>
 
                 <!-- Loading overlay -->
-                <div x-show="isLoading" class="absolute inset-0 bg-white bg-opacity-80 flex items-center justify-center">
+                <div x-show="isLoading"
+                    class="absolute inset-0 bg-white bg-opacity-80 flex items-center justify-center">
                     <div class="flex flex-col items-center">
-                        <svg class="animate-spin h-10 w-10 text-yellow-700 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        <svg class="animate-spin h-10 w-10 text-yellow-700 mb-4" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                            </path>
                         </svg>
                         <p class="text-gray-700">Processing your donation...</p>
                     </div>
@@ -296,11 +390,11 @@
                 stripeKey: 'pk_test_51Qk1VAJPC0lZC5odysZ3tSvOEDPRUlM4ZhBJjpbFGRly574lS07cUyHiwHDGx7HEmMKT42RgmgRqF1JM53Q3KIp500UzmKEmVm', // Replace with your actual publishable key
 
                 // Styling classes
-                activeTabLeft: 'bg-yellow-700 text-white px-4 py-2 rounded-l font-semibold',
-                activeTabRight: 'bg-yellow-700 text-white px-4 py-2 rounded-r font-semibold',
-                inactiveTabLeft: 'bg-gray-100 text-gray-700 px-4 py-2 rounded-l hover:bg-gray-200',
-                inactiveTabRight: 'bg-gray-100 text-gray-700 px-4 py-2 rounded-r hover:bg-gray-200',
-                activeAmount: 'bg-yellow-700 text-white py-2 rounded font-semibold',
+                activeTabLeft: 'bg-[#BE965A] flex-grow active text-white px-4 py-2 rounded-l font-semibold',
+                activeTabRight: 'bg-[#BE965A] flex-grow active text-white px-4 py-2 rounded-r font-semibold',
+                inactiveTabLeft: 'bg-gray-100 flex-grow text-gray-700 px-4 py-2 rounded-l hover:bg-gray-200',
+                inactiveTabRight: 'bg-gray-100 flex-grow text-gray-700 px-4 py-2 rounded-r hover:bg-gray-200',
+                activeAmount: 'bg-[#BE965A] active text-white py-2 rounded font-semibold',
                 inactiveAmount: 'bg-gray-100 text-gray-800 py-2 rounded hover:bg-gray-200',
 
                 get totalAmount() {
@@ -354,37 +448,40 @@
                     this.isLoading = true;
 
                     fetch('/create-checkout-session', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                        },
-                        body: JSON.stringify({
-                            donorName: this.donorName,
-                            donorEmail: this.donorEmail,
-                            selectedProject: this.selectedProject,
-                            selectedAmount: this.selectedAmount,
-                            processingFee: this.processingFee,
-                            tipAmount: this.tipAmount,
-                            totalAmount: this.totalAmount + this.tipAmount,
-                            donationType: this.type,
-                            message: this.message,
-                            stayAnonymous: this.stayAnonymous,
-                            allowContact: this.allowContact,
-                            paymentMethod: this.paymentMethod
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                    'content')
+                            },
+                            body: JSON.stringify({
+                                donorName: this.donorName,
+                                donorEmail: this.donorEmail,
+                                selectedProject: this.selectedProject,
+                                selectedAmount: this.selectedAmount,
+                                processingFee: this.processingFee,
+                                tipAmount: this.tipAmount,
+                                totalAmount: this.totalAmount + this.tipAmount,
+                                donationType: this.type,
+                                message: this.message,
+                                stayAnonymous: this.stayAnonymous,
+                                allowContact: this.allowContact,
+                                paymentMethod: this.paymentMethod
+                            })
                         })
-                    })
-                    .then(response => response.json())
-                    .then(session => {
-                        // Redirect to Stripe Checkout
-                        const stripe = Stripe(this.stripeKey);
-                        return stripe.redirectToCheckout({ sessionId: session.id });
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        this.isLoading = false;
-                        alert('There was an error processing your payment. Please try again.');
-                    });
+                        .then(response => response.json())
+                        .then(session => {
+                            // Redirect to Stripe Checkout
+                            const stripe = Stripe(this.stripeKey);
+                            return stripe.redirectToCheckout({
+                                sessionId: session.id
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            this.isLoading = false;
+                            alert('There was an error processing your payment. Please try again.');
+                        });
                 },
 
                 resetForm() {
